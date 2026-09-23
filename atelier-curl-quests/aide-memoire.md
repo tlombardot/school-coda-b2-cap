@@ -15,7 +15,7 @@ Une entrée par quête. Trois lignes chacune, écrites avec mes mots.
 **La commande** :
 
 ```bash
-
+curl http://localhost:8080/inventory
 ```
 
 **Le piège** :
@@ -29,7 +29,7 @@ Une entrée par quête. Trois lignes chacune, écrites avec mes mots.
 **La commande** :
 
 ```bash
-
+curl -s -X POST -H "Content-Type: application/json" -d '{"name":"Butter"}' http://localhost:8080/inventory
 ```
 
 **Le piège** :
@@ -43,7 +43,9 @@ Une entrée par quête. Trois lignes chacune, écrites avec mes mots.
 **La commande** :
 
 ```bash
-
+curl -s -X PATCH -H "Content-Type: application/json" -d '{"name:"Organic Bananas"}' http://localhost:8080/inventory/1
+curl -s -X PUT -H "Content-Type: application/json" -d '{"name:"In stock Watermelon", "price":"5.00"}' http://localhost:8080/inventory/2
+curl -s -X DELETE http://localhost:8080/inventory/3
 ```
 
 **Le piège** :
@@ -57,7 +59,8 @@ Une entrée par quête. Trois lignes chacune, écrites avec mes mots.
 **La commande** :
 
 ```bash
-
+curl -s http://localhost:8080/pokemon/search?type=fire
+curl -s http://localhost:8080/pokemon/search?type=fire&role=special+attacker
 ```
 
 **Le piège** :
@@ -71,7 +74,7 @@ Une entrée par quête. Trois lignes chacune, écrites avec mes mots.
 **La commande** :
 
 ```bash
-
+curl -s -o payslip.json http://localhost:8080/files/payslip
 ```
 
 **Le piège** :
@@ -85,6 +88,7 @@ Une entrée par quête. Trois lignes chacune, écrites avec mes mots.
 **La commande** :
 
 ```bash
+curl -s -X GET -H "x-api-key: secret123" http://localhost:8080/groceries
 
 ```
 
