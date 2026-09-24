@@ -313,6 +313,30 @@ paths:
   #   Consulter le détail d'un lancer. Le détail porte ce qu'une liste de
   #   résultats n'a aucune raison de transporter pour chacune de ses lignes.
   #   Opération PUBLIQUE.
+  /trips/{id}:
+    get:
+      tags: [Découverte]
+      operationId: getTrips
+      summary: Recherche un lancer en particulier
+      security: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      description: |
+        En paramètre l'id du lancer,
+        il retourne le détail du lancer avec son reliant deux villes avec comme parametres la ville de
+        départ, d'arrivée, la date, le nombre de place, le prix, la masse, le modele et la consigne.
+      responses:
+        "200":
+          description: Détails du lancer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TripDetail"
+        "404": { $ref: "#/components/responses/NotFound" }
 
   # ---- Panier (authentifié) ------------------------------------------------
 
@@ -616,7 +640,7 @@ components:
       type: object
       description: |
         Un lancer, le résumé de ce lancer, de quoi choisir donc elle n'affiche pas tout les détails de ce lancer.
-        Renvoie le départ, l'arrivée, l'heure de départ et la durée en minute.
+        Renvoie le départ, l'arrivée, l'heure de départ, la durée en minute et le prix.
       required: [id, departureCity, arrivalCity, departureTime, duration, price]
       properties:
         id:
@@ -642,6 +666,28 @@ components:
     #   Le même lancer, consulté seul. Il ajoute ce dont on a besoin une fois
     #   qu'on l'a choisi — notamment la franchise de masse, qui n'est pas ici
     #   une limite commerciale mais balistique.
+    TripDetail:
+      description: |
+        Un lancer, le résumé de ce lancer, tout les détails.
+        Renvoie le départ, l'arrivée, l'heure de départ, la durée en minute, le prix, la masse, le modele et la consigne.
+      allOf:
+        - $ref: "#/components/schemas/TripSummary"
+        - type: object
+          required: [massAllowance, catapultModel, instruction]
+          properties:
+            massAllowance:
+              type: integer
+              example: 23
+            catapultModel:
+              type: string
+              example: Onagre M3
+            instruction:
+              type: string
+              example: |
+                Présentez-vous à la catapulte municipale de Paris vingt minutes avant l'heure du lancer.
+                Le port du casque fourni par l'Office est obligatoire jusqu'à réception.
+                Les bagages sont pesés à l'embarquement : au-delà de la franchise,
+                la trajectoire ne peut être garantie.
 
     # Cart
     #   Un panier de réservation. Il connaît son état, ses lignes, et son total.
