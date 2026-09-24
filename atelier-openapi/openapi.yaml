@@ -429,6 +429,32 @@ paths:
   #   Retirer une ligne du panier. Si c'était la dernière, le panier disparaît
   #   côté serveur — le voyageur n'a rien à faire de plus.
 
+  /carts/{id}/items/{itemId}:
+    delete:
+      tags: [Panier]
+      operationId: removeCartItem
+      summary: Retirer une ligne du panier
+      description: |
+        Retire une ligne de réservation du panier.
+        Si cette ligne était le dernier, le panier est supprimé.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Ligne retirée du panier.
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
   # POST /carts/{id}/pay
   #   Payer le panier : il passe de `pending` à `paid` et les billets sont
   #   émis, un par place réservée. Aucune donnée bancaire ne circule : on
