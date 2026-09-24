@@ -83,3 +83,13 @@ Vous pouvez importer `openapi.yaml` dans Bruno pour générer votre collection :
 requêtes viennent de votre propre contrat.
 
 N'écrivez pas les douze opérations avant de tester la première.
+
+## Sources et déclaration d'utilisation des outils
+
+### Sources et documentation consultées
+- Documentation Swagger sur les paramètres : https://swagger.io/docs/specification/v3_0/describing-parameters/
+- StackOverflow (exemples de tableaux et références en OpenAPI 3) : https://stackoverflow.com/questions/49839121/how-to-reference-array-item-examples-in-openapi-3
+- Curl Cheat Sheet (codes de statut et requêtes HTTP) : https://curl.github.io/curl-cheat-sheet/http-sheet.html
+
+### Déclaration d'utilisation de l'IA
+- Utilisation de l'IA pour la vérification et la correction de syntaxe YAML / OpenAPI.
