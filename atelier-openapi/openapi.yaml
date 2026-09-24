@@ -343,6 +343,28 @@ paths:
   # POST /carts
   #   Ouvrir un panier vide. C'est ici que la connexion devient nécessaire :
   #   la découverte est libre, la réservation est nominative.
+  /carts:
+    post:
+      tags: [Panier]
+      operationId: openCart
+      summary: Ouvre un panier vide, besoin d'un token d'authentification
+      description: |
+        Ouvre un panier vide, avec son état, ses lignes,
+        son total calculé et sa date d'ouverture
+      responses:
+        "201":
+          description: Ouverture d'un panier vide
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "409":
+          description: Le voyageur a déjà un panier actif.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
 
   # GET /carts
   #   Récupérer le panier actif du voyageur connecté. Un voyageur n'a qu'un
@@ -691,9 +713,49 @@ components:
 
     # Cart
     #   Un panier de réservation. Il connaît son état, ses lignes, et son total.
+    Cart:
+      type: object
+      description: Le panier de réservation avec son état, ses lignes, son total et sa date d'ouverture.
+      required: [id, status, items, total, createdAt]
+      properties:
+        id:
+          type: integer
+          example: 24
+        status:
+          type: string
+          enum: [pending, paid]
+          example: pending
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItem"
+        total:
+          type: integer
+          example: 164
+        createdAt:
+          type: string
+          format: date
+          example: 2026-02-24
 
     # CartItem
     #   Une ligne de panier : un lancer et un nombre de places.
+    CartItem:
+      type: object
+      description: Ligne du panier avec le lancer et son nombre de places
+      required: [id, trip, passengers, subtotal]
+      properties:
+        id:
+          type: integer
+          example: 1
+        trip:
+          $ref: "#/components/schemas/TripSummary"
+        passengers:
+          type: integer
+          minimum: 1
+          example: 2
+        subtotal:
+          type: integer
+          example: 164
 
     # Ticket
     #   Un droit à embarquer sur un lancer, émis au paiement. Un par place.
