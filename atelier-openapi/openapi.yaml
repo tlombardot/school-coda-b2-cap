@@ -392,6 +392,38 @@ paths:
   #   Ajouter un lancer au panier, avec un nombre de places.
   #   L'écran de panier doit pouvoir se peindre à partir de cette seule
   #   réponse, sans second appel. Le total est calculé par le serveur.
+  /carts/{id}/items:
+    post:
+      tags: [Panier]
+      operationId: addCartItem
+      summary: Ajouter un lancer au panier
+      description: |
+        Ajoute un lancer au panier.
+        Retourne le panier mis à jour.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItemRequest"
+      responses:
+        "200":
+          description: Item ajouté dans le panier.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ValidationError" }
 
   # DELETE /carts/{id}/items/{itemId}
   #   Retirer une ligne du panier. Si c'était la dernière, le panier disparaît
@@ -723,10 +755,10 @@ components:
             instruction:
               type: string
               example: |
-                Présentez-vous à la catapulte municipale de Paris vingt minutes avant l'heure du lancer.
-                Le port du casque fourni par l'Office est obligatoire jusqu'à réception.
-                Les bagages sont pesés à l'embarquement : au-delà de la franchise,
-                la trajectoire ne peut être garantie.
+                Attendez 20 minutes avant l'arriver de votre mort ou délivrance.
+                Serrez bien votre ceinture (s'il y'en a) au moment du décolage.
+                Et subissez les 43000 km/h en ésperant vous retrouvez de l'autre coté.
+                Sinon prenez la couche d'ozone ça vous permetra une délivrance immédiate.
 
     # Cart
     #   Un panier de réservation. Il connaît son état, ses lignes, et son total.
@@ -774,5 +806,16 @@ components:
           type: integer
           example: 164
 
+    CartItemRequest:
+      type: object
+      required: [tripId, passengers]
+      properties:
+        tripId:
+          type: integer
+          example: 611
+        passengers:
+          type: integer
+          minimum: 1
+          example: 2
     # Ticket
     #   Un droit à embarquer sur un lancer, émis au paiement. Un par place.
