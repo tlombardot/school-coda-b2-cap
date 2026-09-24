@@ -506,7 +506,27 @@ paths:
   #   Lister les billets du voyageur connecté. Un billet est un droit à
   #   embarquer sur un lancer : il n'est pas nominatif, il vaut pour une
   #   place et non pour une personne désignée.
-
+  /tickets:
+    get:
+      tags: [Compte]
+      operationId: getTickets
+      summary: Liste tout les tickets du voyageur
+      description: |
+        Lister tout les tickets du voyageur connecté. Un billet est ce qu'il permet
+        au voyageur d'embarquer sur un lancer. Non nominatif.
+        Donne sur le ticket le lancer avec le point de départ et d'arrivé, heure de départ
+        ,le prix et quand il a été emis
+      responses:
+        "200":
+          description: Liste tout les tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
 components:
   # ==========================================================================
   #  FOURNI — Sécurité, erreurs, et schémas de l'authentification
@@ -873,6 +893,7 @@ components:
     CartItemRequest:
       type: object
       required: [tripId, passengers]
+      description: Requête d'un lancer et le nombre de passagers
       properties:
         tripId:
           type: integer
