@@ -461,6 +461,44 @@ paths:
   #   déclare un moyen de paiement, rien de plus.
   #   L'écran de confirmation doit pouvoir se peindre à partir de cette seule
   #   réponse. Que se passe-t-il si le panier est déjà payé ?
+  /carts/{id}/pay:
+    post:
+      tags: [Panier]
+      operationId: payCart
+      summary: Régler le panier
+      description: |
+        Passe le panier en attente à l'état réglé.
+        Le moyen de paiement est simulé entre une carte bancaire ou un bon de transport.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartPayRequest"
+      responses:
+        "200":
+          description: Panier réglé.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartPayResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "409":
+          description: Le panier a déjà été réglé.
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+        "422": { $ref: "#/components/responses/ValidationError" }
 
   # ---- Billets (authentifié) -----------------------------------------------
 
@@ -843,5 +881,45 @@ components:
           type: integer
           minimum: 1
           example: 2
+
+    CartPayRequest:
+      type: object
+      description: Déclaration du moyen de paiement.
+      required: [paymentMethod]
+      properties:
+        paymentMethod:
+          type: string
+          enum: [card, voucher]
+          example: card
+
+    CartPayResponse:
+      type: object
+      description: Règlement contenant le panier payé et les billets émis.
+      required: [cart, tickets]
+      properties:
+        cart:
+          $ref: "#/components/schemas/Cart"
+        tickets:
+          type: array
+          items:
+            $ref: "#/components/schemas/Ticket"
+
     # Ticket
     #   Un droit à embarquer sur un lancer, émis au paiement. Un par place.
+    Ticket:
+      type: object
+      description: Billet d'embarquement pour un lancer direct.
+      required: [id, trip, price, issuedAt]
+      properties:
+        id:
+          type: integer
+          example: 101
+        trip:
+          $ref: "#/components/schemas/TripSummary"
+        price:
+          type: integer
+          example: 68
+        issuedAt:
+          type: string
+          format: date-time
+          example: "2026-02-24T10:15:00Z"
