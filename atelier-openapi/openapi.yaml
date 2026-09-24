@@ -83,27 +83,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RegisterRequest'
+              $ref: "#/components/schemas/RegisterRequest"
       responses:
-        '201':
+        "201":
           description: Dossier voyageur ouvert.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '409':
+                $ref: "#/components/schemas/User"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "409":
           description: Un dossier existe déjà pour cette adresse.
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
               example:
-                type: 'https://api.catapulte-connect.ontb.example/errors/email-taken'
+                type: "https://api.catapulte-connect.ontb.example/errors/email-taken"
                 title: Adresse déjà enregistrée
                 status: 409
                 detail: Un dossier voyageur existe déjà pour bob@example.com.
-        '422': { $ref: '#/components/responses/ValidationError' }
+        "422": { $ref: "#/components/responses/ValidationError" }
 
   /auth/login:
     post:
@@ -123,27 +123,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
       responses:
-        '200':
+        "200":
           description: Jetons délivrés.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenPair'
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401':
+                $ref: "#/components/schemas/TokenPair"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401":
           description: Identifiants invalides.
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
               example:
-                type: 'https://api.catapulte-connect.ontb.example/errors/invalid-credentials'
+                type: "https://api.catapulte-connect.ontb.example/errors/invalid-credentials"
                 title: Identifiants invalides
                 status: 401
                 detail: Adresse e-mail ou mot de passe incorrect.
-        '422': { $ref: '#/components/responses/ValidationError' }
+        "422": { $ref: "#/components/responses/ValidationError" }
 
   /auth/refresh:
     post:
@@ -162,9 +162,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/RefreshRequest'
+              $ref: "#/components/schemas/RefreshRequest"
       responses:
-        '200':
+        "200":
           description: Nouveau jeton d'accès délivré.
           content:
             application/json:
@@ -175,14 +175,14 @@ paths:
                   accessToken:
                     type: string
                     description: Jeton d'accès, valable 1 heure.
-        '400': { $ref: '#/components/responses/BadRequest' }
-        '401':
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401":
           description: Jeton de renouvellement invalide ou expiré.
           content:
             application/problem+json:
               schema:
-                $ref: '#/components/schemas/Problem'
-        '422': { $ref: '#/components/responses/ValidationError' }
+                $ref: "#/components/schemas/Problem"
+        "422": { $ref: "#/components/responses/ValidationError" }
 
   /users/me:
     get:
@@ -195,13 +195,13 @@ paths:
         Il n'existe pas d'opération pour consulter le dossier d'un autre voyageur : le
         jeton désigne le titulaire, aucun identifiant ne circule dans le chemin.
       responses:
-        '200':
+        "200":
           description: Dossier du voyageur connecté.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '401': { $ref: '#/components/responses/Unauthorized' }
+                $ref: "#/components/schemas/User"
+        "401": { $ref: "#/components/responses/Unauthorized" }
 
   # ==========================================================================
   #  À VOUS — Le flux de réservation
@@ -224,6 +224,43 @@ paths:
   #   Rechercher une ville desservie, par filtre textuel.
   #   Chaque ville du réseau possède une catapulte unique en son centre.
   #   Opération PUBLIQUE : on cherche sans être connecté.
+  /cities:
+    get:
+      tags: [Découverte]
+      operationId: getCities
+      summary: Rechercher une ville desservie
+      security: []
+      parameters:
+        - in: query
+          name: name
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+      description: |
+        Retourne la liste des villes desservies
+        Aucun besoin d'être connecté pour rechercher
+        Si la recherche est précisé selon le nom ou le commencement de la lettre d'une ville, elle retournera
+        juste les villes avec cette correspondance.
+      responses:
+        "200":
+          description: Villes desservie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/City"
+              example:
+                - id: 1
+                  name: Paris
+                - id: 2
+                  name: Bordeaux
+        "400": { $ref: "#/components/responses/BadRequest" }
 
   # POST /trips/search
   #   Rechercher les lancers reliant deux villes à une date donnée, pour un
@@ -295,9 +332,9 @@ components:
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/Problem'
+            $ref: "#/components/schemas/Problem"
           example:
-            type: 'about:blank'
+            type: "about:blank"
             title: Bad Request
             status: 400
             detail: Syntax error in JSON body.
@@ -307,9 +344,9 @@ components:
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/Problem'
+            $ref: "#/components/schemas/Problem"
           example:
-            type: 'about:blank'
+            type: "about:blank"
             title: Unauthorized
             status: 401
             detail: Jeton d'accès absent, invalide ou expiré.
@@ -319,9 +356,9 @@ components:
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/Problem'
+            $ref: "#/components/schemas/Problem"
           example:
-            type: 'https://api.catapulte-connect.ontb.example/errors/not-owner'
+            type: "https://api.catapulte-connect.ontb.example/errors/not-owner"
             title: Accès refusé
             status: 403
             detail: Ce panier appartient à un autre dossier voyageur.
@@ -331,9 +368,9 @@ components:
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/Problem'
+            $ref: "#/components/schemas/Problem"
           example:
-            type: 'about:blank'
+            type: "about:blank"
             title: Not Found
             status: 404
             detail: Aucune ressource ne correspond à cet identifiant.
@@ -345,9 +382,9 @@ components:
       content:
         application/problem+json:
           schema:
-            $ref: '#/components/schemas/ValidationProblem'
+            $ref: "#/components/schemas/ValidationProblem"
           example:
-            type: 'https://api.catapulte-connect.ontb.example/errors/validation'
+            type: "https://api.catapulte-connect.ontb.example/errors/validation"
             title: Données invalides
             status: 422
             detail: 1 champ est en erreur.
@@ -367,7 +404,7 @@ components:
         type:
           type: string
           format: uri
-          default: 'about:blank'
+          default: "about:blank"
           description: URI identifiant le type d'erreur. `about:blank` quand le statut HTTP suffit à la décrire.
         title:
           type: string
@@ -386,7 +423,7 @@ components:
     ValidationProblem:
       description: Erreur de validation — un `Problem` enrichi du détail des champs fautifs.
       allOf:
-        - $ref: '#/components/schemas/Problem'
+        - $ref: "#/components/schemas/Problem"
         - type: object
           properties:
             violations:
@@ -477,7 +514,7 @@ components:
         createdAt:
           type: string
           format: date-time
-          example: '2027-02-14T10:03:00Z'
+          example: "2027-02-14T10:03:00Z"
 
     # ==========================================================================
     #  À VOUS — Les schémas du flux de réservation
@@ -495,10 +532,46 @@ components:
     # City
     #   Une ville desservie. Chaque ville possède une catapulte unique en son
     #   centre, qui sert à la fois de point de lancement et de réception.
+    City:
+      type: object
+      description: Une ville desservie. Peut servier de point de lancer ou réception
+      required: [id, name]
+      properties:
+        id:
+          type: integer
+          example: 25
+        name:
+          type: string
+          example: Paris
 
     # TripSummary
     #   Un lancer tel qu'il apparaît dans une liste de résultats : de quoi
     #   choisir, pas de quoi préparer son voyage.
+    TripSummary:
+      type: object
+      description: |
+        Un lancer, le résumé de ce lancer, de quoi choisir donc elle n'affiche pas tout les détails de ce lancer.
+        Renvoie le départ, l'arrivée, l'heure de départ et la durée en minute.
+      required: [id, departureCity, arrivalCity, departureTime, duration, price]
+      properties:
+        id:
+          type: integer
+          example: 611
+        departureCity:
+          type: string
+          example: Paris
+        arrivalCity:
+          type: string
+          example: Bordeaux
+        departureTime:
+          type: string
+          example: 07:15
+        duration:
+          type: integer
+          example: 42
+        price:
+          type: integer
+          example: 68
 
     # TripDetail
     #   Le même lancer, consulté seul. Il ajoute ce dont on a besoin une fois

@@ -35,11 +35,11 @@ le YAML. Elle aussi se met à jour au rechargement de la page, sans redémarrage
 
 Tout se passe dans **`openapi.yaml`**. Il est découpé en deux :
 
-| Partie | État |
-|---|---|
-| Authentification et profil | **écrites** — vos modèles de référence |
-| Sécurité, format d'erreur | **posés** — à réutiliser (`$ref`), pas à redéfinir |
-| Le flux de réservation | **à vous** |
+| Partie                     | État                                               |
+| -------------------------- | -------------------------------------------------- |
+| Authentification et profil | **écrites** — vos modèles de référence             |
+| Sécurité, format d'erreur  | **posés** — à réutiliser (`$ref`), pas à redéfinir |
+| Le flux de réservation     | **à vous**                                         |
 
 Les opérations fournies ne sont pas là pour être recopiées. Elles sont là parce que
 tout ce dont vous avez besoin pour écrire le reste s'y trouve déjà au moins une fois :
