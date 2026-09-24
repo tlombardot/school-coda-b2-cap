@@ -340,16 +340,16 @@ paths:
 
   # ---- Panier (authentifié) ------------------------------------------------
 
-  # POST /carts
-  #   Ouvrir un panier vide. C'est ici que la connexion devient nécessaire :
-  #   la découverte est libre, la réservation est nominative.
   /carts:
+    # POST /carts
+    #   Ouvrir un panier vide. C'est ici que la connexion devient nécessaire :
+    #   la découverte est libre, la réservation est nominative.
     post:
       tags: [Panier]
       operationId: openCart
       summary: Ouvre un panier vide, besoin d'un token d'authentification
       description: |
-        Ouvre un panier vide, avec son état, ses lignes,
+        Ouvre un panier vide, avec son état, ses items,
         son total calculé et sa date d'ouverture
       responses:
         "201":
@@ -366,10 +366,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/Problem"
 
-  # GET /carts
-  #   Récupérer le panier actif du voyageur connecté. Un voyageur n'a qu'un
-  #   panier actif à la fois — et parfois aucun, ce qui est un état normal
-  #   et non une erreur. Réfléchissez à ce que ça implique pour la réponse.
+    # GET /carts
+    #   Récupérer le panier actif du voyageur connecté. Un voyageur n'a qu'un
+    #   panier actif à la fois — et parfois aucun, ce qui est un état normal
+    #   et non une erreur. Réfléchissez à ce que ça implique pour la réponse.
+    get:
+      tags: [Panier]
+      operationId: getCart
+      summary: Récupere le panier de l'utilisateur, besoin d'un token d'authentification
+      description: |
+        Récupéreu un panier rempli ou vide, avec son état, ses items,
+        son total calculé et sa date d'ouverture
+      responses:
+        "200":
+          description: Ouverture d'un panier
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cart"
+        "401": { $ref: "#/components/responses/Unauthorized" }
 
   # POST /carts/{id}/items
   #   Ajouter un lancer au panier, avec un nombre de places.
