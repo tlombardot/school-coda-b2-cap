@@ -267,6 +267,47 @@ paths:
   #   nombre de places. Tous les lancers sont directs : aucune correspondance,
   #   aucun itinéraire composé. Sans lancer direct ce jour-là, la liste est vide.
   #   Opération PUBLIQUE.
+  /trips/search:
+    post:
+      tags: [Découverte]
+      operationId: searchTrips
+      summary: Recherche les lancers reliant deux villes
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TripSearchRequest"
+
+      description: |
+        Recherche des lancers reliant deux villes avec comme parametres la ville de
+        départ, d'arrivée, la date et le nombre de place pour récuperer une liste de
+        de lancer
+      responses:
+        "200":
+          description: Liste de lancers reliant deux villes à une certaine date avec un nombre de place
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TripSummary"
+              example:
+                - id: 611
+                  departureCity: Paris
+                  arrivalCity: Bordeaux
+                  departureTime: 07:15
+                  duration: 42
+                  price: 68
+                - id: 642
+                  departureCity: Paris
+                  arrivalCity: Bordeaux
+                  departureTime: 08:15
+                  duration: 42
+                  price: 54
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "422": { $ref: "#/components/responses/ValidationError" }
 
   # GET /trips/{id}
   #   Consulter le détail d'un lancer. Le détail porte ce qu'une liste de
@@ -543,6 +584,30 @@ components:
         name:
           type: string
           example: Paris
+
+    # TripSearchRequest
+    #   Permet de definir l'objet pour la requête de /trips/search
+    TripSearchRequest:
+      type: object
+      required: [departureCity, arrivalCity, date, passengers]
+      description: |
+        Prend en parametre la ville de départ, d'arrivé, la
+        date et le nombre de passagers
+      properties:
+        departureCity:
+          type: string
+          example: Paris
+        arrivalCity:
+          type: string
+          example: Bordeaux
+        date:
+          type: string
+          format: date
+          example: 2026-02-24
+        passengers:
+          type: integer
+          minimum: 1
+          example: 2
 
     # TripSummary
     #   Un lancer tel qu'il apparaît dans une liste de résultats : de quoi
